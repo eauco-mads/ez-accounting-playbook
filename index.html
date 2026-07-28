@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EZ Accounting Pro — 2027 Systems Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211d16;
+    --paper:#faf6ec;
+    --paper-2:#f2ead7;
+    --gold:#b8912f;
+    --gold-deep:#8c6d1f;
+    --gold-pale:#e9d9a8;
+    --line:#d8cfb6;
+    --green:#4b6355;
+    --green-pale:#dfe7de;
+    --rust:#a8452f;
+    --rust-pale:#f1ddd6;
+    --ink-soft:#5c5648;
+    --shadow: 0 1px 0 rgba(33,29,22,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold-pale);}
+
+  /* ---------- background paper texture ---------- */
+  .paper-bg{
+    background-image:
+      linear-gradient(var(--paper) 0px, var(--paper) 27px, rgba(184,145,47,0.10) 28px);
+    background-size: 100% 28px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--ink);
+    color:var(--paper);
+    padding:18px 28px 0 28px;
+    border-bottom:3px solid var(--gold);
+  }
+  .header-top{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    padding-bottom:16px;
+  }
+  .brandmark{ display:flex; align-items:center; gap:14px; }
+  .brandmark .seal{
+    width:44px; height:44px; border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, #e8cd7d, var(--gold) 55%, var(--gold-deep) 100%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; color:var(--ink); font-size:18px;
+    box-shadow: inset 0 0 0 2px rgba(33,29,22,0.25);
+    flex-shrink:0;
+  }
+  h1.title{
+    font-family:'Fraunces',serif; font-weight:600; font-size:26px; letter-spacing:0.2px;
+    margin:0; line-height:1.15;
+  }
+  .subtitle{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--gold-pale); margin-top:4px;
+  }
+  .ledger-stamp{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:#c9c2ae;
+    text-align:right; line-height:1.6;
+  }
+  .ledger-stamp b{color:var(--paper); font-weight:600;}
+
+  /* ---------- tab nav (ledger folder tabs) ---------- */
+  nav.tabs{
+    display:flex; gap:4px; margin-top:16px; overflow-x:auto;
+  }
+  nav.tabs button{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; letter-spacing:0.03em;
+    background:#2c271d; color:#cabf9f;
+    border:none; border-bottom:none;
+    padding:11px 18px 10px 18px;
+    cursor:pointer;
+    border-radius:8px 8px 0 0;
+    white-space:nowrap;
+    position:relative; top:1px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.tabs button .num{ color:var(--gold); margin-right:8px; }
+  nav.tabs button:hover{ background:#3a3325; color:var(--paper); }
+  nav.tabs button.active{
+    background:var(--paper); color:var(--ink); font-weight:600;
+  }
+  nav.tabs button.active .num{ color:var(--gold-deep); }
+
+  main{ max-width:1180px; margin:0 auto; padding:34px 28px 90px 28px; }
+  section.panel{ display:none; }
+  section.panel.active{ display:block; animation:fadeIn .25s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px; display:block;
+  }
+  h2.panel-title{
+    font-family:'Fraunces',serif; font-weight:600; font-size:30px; margin:0 0 6px 0;
+  }
+  p.panel-lede{ color:var(--ink-soft); font-size:15px; max-width:720px; line-height:1.6; margin:0 0 30px 0;}
+
+  /* callout used for open decisions / automation flags */
+  .callout{
+    border:1.5px solid var(--line); background:var(--paper-2);
+    border-radius:10px; padding:16px 18px; margin:10px 0 26px 0;
+  }
+  .callout.decision{ border-color:#d8b8ac; background:var(--rust-pale); }
+  .callout.automate{ border-color:#b7c9bb; background:var(--green-pale); }
+  .callout-label{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    display:flex; align-items:center; gap:7px; margin-bottom:8px; font-weight:600;
+  }
+  .callout.decision .callout-label{ color:var(--rust); }
+  .callout.automate .callout-label{ color:var(--green); }
+  .callout ul{ margin:6px 0 0 0; padding-left:18px; }
+  .callout li{ margin-bottom:5px; font-size:13.8px; line-height:1.5; }
+
+  /* ---------- TAB 1: yearly ledger timeline ---------- */
+  .ledger-strip{
+    border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--paper);
+    box-shadow: var(--shadow);
+  }
+  .month-row{
+    display:grid; grid-template-columns: 92px 1fr; border-bottom:1px solid var(--line);
+  }
+  .month-row:last-child{ border-bottom:none; }
+  .month-tab{
+    background:var(--ink); color:var(--paper);
+    display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+    padding:14px 14px; position:relative;
+  }
+  .month-tab .mo-name{ font-family:'Fraunces',serif; font-weight:600; font-size:16px; }
+  .month-tab .mo-idx{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--gold-pale); letter-spacing:.1em; }
+  .month-body{ padding:14px 18px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:var(--paper); }
+  .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 10px; border-radius:999px;
+    border:1px solid var(--line); background:var(--paper-2); color:var(--ink-soft); white-space:nowrap;
+  }
+  .chip.tax{ background:var(--rust-pale); border-color:#d8b8ac; color:var(--rust); }
+  .chip.rollout{ background:var(--gold-pale); border-color:#cfae5f; color:var(--gold-deep); }
+  .chip.onboard{ background:var(--green-pale); border-color:#b7c9bb; color:var(--green); }
+  .chip.internal{ background:#e7e1d1; border-color:var(--line); color:var(--ink-soft); }
+
+  .legend{ display:flex; gap:18px; flex-wrap:wrap; margin:18px 0 28px 0; }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  /* ---------- TAB 2: monthly playbook accordion ---------- */
+  .accordion-item{ border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden; background:var(--paper); }
+  .accordion-head{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:16px 20px; cursor:pointer; background:var(--paper-2);
+  }
+  .accordion-head:hover{ background:var(--gold-pale); }
+  .accordion-head-left{ display:flex; align-items:baseline; gap:14px; }
+  .accordion-head .mo{ font-family:'Fraunces',serif; font-weight:600; font-size:19px; min-width:130px; }
+  .accordion-head .focus{ font-size:13.5px; color:var(--ink-soft); }
+  .accordion-head .caret{ font-family:'IBM Plex Mono',monospace; color:var(--gold-deep); font-size:14px; transition:transform .2s ease; }
+  .accordion-item.open .caret{ transform:rotate(90deg); }
+  .accordion-body{ display:none; padding:20px 22px 22px 22px; }
+  .accordion-item.open .accordion-body{ display:block; }
+
+  .col-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:22px; }
+  @media(max-width:720px){ .col-grid{ grid-template-columns:1fr; } }
+  .col-heading{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--gold-deep); margin-bottom:8px; font-weight:600;
+  }
+  .task-list{ list-style:none; margin:0 0 16px 0; padding:0; }
+  .task-list li{
+    font-size:13.8px; line-height:1.5; padding:7px 0 7px 22px; position:relative; border-bottom:1px dashed var(--line);
+    color:var(--ink);
+  }
+  .task-list li:last-child{ border-bottom:none; }
+  .task-list li:before{
+    content:"—"; position:absolute; left:0; color:var(--gold-deep);
+  }
+  .template-link{
+    display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:12px;
+    background:var(--ink); color:var(--paper); padding:6px 12px; border-radius:999px; text-decoration:none;
+    margin:3px 6px 3px 0; border:none; cursor:pointer;
+  }
+  .template-link:hover{ background:var(--gold-deep); }
+  .template-link:before{ content:"↳"; color:var(--gold); }
+
+  /* ---------- TAB 3: template library ---------- */
+  .doc-card{
+    border:1px solid var(--line); border-radius:12px; margin-bottom:16px; background:var(--paper); overflow:hidden;
+    scroll-margin-top:100px;
+  }
+  .doc-card-head{
+    background:var(--ink); color:var(--paper); padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+  }
+  .doc-card-head h3{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; margin:0; }
+  .doc-tag{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; background:var(--gold); color:var(--ink); padding:3px 9px; border-radius:999px; letter-spacing:.05em;}
+  .doc-card-body{ padding:18px 22px; font-size:13.8px; line-height:1.65; color:var(--ink); }
+  .doc-card-body h4{ font-family:'Inter',sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-deep); margin:16px 0 6px 0;}
+  .doc-card-body h4:first-child{ margin-top:0; }
+  .doc-card-body ul{ margin:0 0 4px 0; padding-left:20px; }
+  .doc-card-body li{ margin-bottom:4px; }
+  .email-body{
+    background:var(--paper-2); border-left:3px solid var(--gold); padding:14px 16px; border-radius:0 8px 8px 0;
+    font-size:13.4px; white-space:pre-wrap; line-height:1.6; color:var(--ink);
+  }
+  .script-q{ font-weight:600; color:var(--ink-soft); font-size:12.8px; margin-top:12px; }
+  .script-a{ background:var(--paper-2); border-left:3px solid var(--green); padding:10px 14px; border-radius:0 8px 8px 0; margin-top:5px; font-size:13.4px; font-style:italic; }
+
+  /* jump index */
+  .jump-index{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px; }
+  .jump-index a{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-decoration:none; color:var(--ink-soft);
+    border:1px solid var(--line); padding:6px 11px; border-radius:999px; background:var(--paper-2);
+  }
+  .jump-index a:hover{ background:var(--gold-pale); color:var(--ink); }
+
+  /* ---------- TAB 4: rollout plan ---------- */
+  .phase{ display:flex; gap:18px; margin-bottom:22px; }
+  .phase-marker{ display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:34px; }
+  .phase-dot{ width:14px; height:14px; border-radius:50%; background:var(--gold); border:3px solid var(--gold-pale); flex-shrink:0; }
+  .phase-line{ flex:1; width:2px; background:var(--line); margin-top:4px; }
+  .phase-content{ padding-bottom:6px; }
+  .phase-content h3{ font-family:'Fraunces',serif; font-size:17px; margin:0 0 4px 0; }
+  .phase-when{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold-deep); margin-bottom:8px; display:block;}
+  .phase-content p{ margin:0 0 8px 0; font-size:13.8px; color:var(--ink-soft); line-height:1.55; }
+  .phase-content ul{ margin:0; padding-left:18px; font-size:13.8px; line-height:1.6; }
+  .phase-content li{ margin-bottom:4px; }
+
+  /* ---------- TAB 5: onboarding ---------- */
+  .role-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:28px; }
+  @media(max-width:860px){ .role-grid{ grid-template-columns:1fr; } }
+  .role-card{ border:1px solid var(--line); border-radius:12px; padding:18px; background:var(--paper); }
+  .role-card .role-tier{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-deep); }
+  .role-card h3{ font-family:'Fraunces',serif; font-size:17px; margin:6px 0 8px 0; }
+  .role-card p{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin:0 0 10px 0; }
+  .role-card ul{ font-size:13px; padding-left:18px; margin:0; line-height:1.55; }
+
+  .flow-steps{ counter-reset:step; }
+  .flow-step{ display:flex; gap:16px; margin-bottom:18px; }
+  .flow-step .step-n{
+    counter-increment:step; font-family:'Fraunces',serif; font-weight:600; font-size:20px; color:var(--gold);
+    width:32px; flex-shrink:0;
+  }
+  .flow-step .step-n:before{ content: counter(step); }
+  .flow-step-body h4{ margin:0 0 4px 0; font-size:14.5px; font-family:'Inter',sans-serif; font-weight:700; }
+  .flow-step-body p{ margin:0; font-size:13.5px; color:var(--ink-soft); line-height:1.55; }
+
+  footer{
+    text-align:center; padding:26px 0 40px 0; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft);
+  }
+
+  /* ---------- Notes tab ---------- */
+  .notes-wrap{ display:flex; flex-direction:column; gap:10px; }
+  .notes-status{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft);
+  }
+  .notes-status .saved-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; }
+  textarea.notes-area{
+    width:100%; min-height:420px; resize:vertical; border:1.5px solid var(--line); border-radius:10px;
+    background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; font-size:14.5px; line-height:1.6;
+    padding:18px; box-shadow: var(--shadow);
+  }
+  textarea.notes-area:focus{ outline:none; border-color:var(--gold); }
+  .notes-btn{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--ink); color:var(--paper);
+    border:none; padding:8px 14px; border-radius:999px; cursor:pointer;
+  }
+  .notes-btn:hover{ background:var(--gold-deep); }
+  .notes-btn.secondary{ background:transparent; color:var(--ink-soft); border:1px solid var(--line); }
+  .notes-btn.secondary:hover{ background:var(--paper-2); color:var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="brandmark">
+      <div class="seal">EZ</div>
+      <div>
+        <h1 class="title">EZ Accounting Pro</h1>
+        <div class="subtitle">2026–2027 Systems &amp; Season Playbook</div>
+      </div>
+    </div>
+    <div class="ledger-stamp">
+      Prepared for <b>Jessica</b><br>
+      Cycle: <b>Aug 2026 – Dec 2027</b><br>
+      Status: <b>Build &amp; Roll-out, then Standing Cycle</b>
+    </div>
+  </div>
+  <nav class="tabs" id="tabnav">
+    <button class="active" data-tab="t0"><span class="num">00</span>Hub</button>
+    <button data-tab="t1"><span class="num">01</span>17-Month Overview</button>
+    <button data-tab="t2"><span class="num">02</span>Monthly Playbook</button>
+    <button data-tab="t3"><span class="num">03</span>Template &amp; Doc Library</button>
+    <button data-tab="t4"><span class="num">04</span>2027 Rollout Plan</button>
+    <button data-tab="t5"><span class="num">05</span>New-Hire Onboarding</button>
+    <button data-tab="t6"><span class="num">06</span>Time &amp; Invoicing</button>
+    <button data-tab="t7"><span class="num">07</span>Notes</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ===================== TAB 0 — HUB ===================== -->
+<section class="panel active" id="t0">
+  <span class="eyebrow">Tab 00</span>
+  <h2 class="panel-title">Hub — One-Page Overview</h2>
+  <p class="panel-lede">Everything below in one glance: the build-to-standing-cycle timeline, exactly how a tax client moves through intake, and what lives on each of the other tabs. Start here, then click through to whatever's needed.</p>
+
+  <div class="col-heading" style="font-size:12px; margin-bottom:10px;">Timeline, Compressed</div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Aug – Oct 2026</span>
+      <h3>Build &amp; Test</h3>
+      <p>Lock the open decisions, finalize the new letters and forms, confirm ShareFile automation points at the new versions.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">November 2026</span>
+      <h3>Full Re-Sign — Ahead of Tax Season</h3>
+      <p>Every client gets the new Engagement Letter + Policy Addendum, with a December 15 signing deadline — sent deliberately before any tax messaging, so no one signs under time pressure or misses it in the tax-season shuffle.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">December 2026</span>
+      <h3>Close the Loop</h3>
+      <p>Follow up on anyone unsigned past Dec 15. Send the Year-End Policy Update email. Only signed clients make the January tax list.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Jan 2027</span>
+      <h3>Tax Season Begins</h3>
+      <p>Tax Engagement Letters + Personal/Business Tax Questionnaires go out to signed clients only. Every tax client gets the Tax Engagement Letter.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Feb – Apr 2027</span>
+      <h3>Tax Season Peak</h3>
+      <p>Partnership/S-Corp deadline Mar 15, Individual/C-Corp Apr 15. Peak-season response SLA in effect.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">May – Sept 2027</span>
+      <h3>Refine &amp; Extend</h3>
+      <p>Tutorial videos, fee-trigger automation, hiring window if needed, franchisee documents finalized, extension-filer season.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Oct – Dec 2027</span>
+      <h3>Close &amp; Lock the Standard</h3>
+      <p>Extension season closes Oct 15. Next year's pricing and Year-End email drafted in November. December send makes this the standing annual template — 2028 just repeats the Jan–Dec 2027 shape.</p>
+    </div>
+  </div>
+  <p style="text-align:right; margin:0 0 30px 0;"><a href="#t1" class="template-link" style="background:var(--ink);" data-jump="t1">Full month-by-month detail — Tab 01 ↗</a></p>
+
+  <div class="col-heading" style="font-size:12px; margin-bottom:10px;">The Tax Client Process</div>
+  <div class="callout automate" style="margin-bottom:30px;">
+    <ol style="margin:0; padding-left:20px; font-size:14.5px; line-height:1.8;">
+      <li><b>Client completes the questionnaire</b> (Personal and/or Business) — at this stage we only ask for a copy of <b>last year's return</b>, nothing else.</li>
+      <li><b>EZ Accounting Pro reviews it</b> and sends back a <b>personalized document checklist</b> built for that client's exact situation.</li>
+      <li><b>That email includes the ShareFile upload link.</b> Client uploads everything on the checklist there — texts, emails, and Google Docs are not accepted in place of a ShareFile upload unless the client is on the highest-tier plan.</li>
+      <li><b>Queue position is not held</b> until every document on the checklist is fully submitted through ShareFile.</li>
+    </ol>
+  </div>
+
+  <div class="col-heading" style="font-size:12px; margin-bottom:10px;">What's On Each Tab</div>
+  <div class="col-grid" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="role-card">
+      <span class="role-tier">Tab 01</span>
+      <h3 style="font-size:16px;">17-Month Overview</h3>
+      <p style="margin:0;">The full Aug 2026–Dec 2027 ledger — every tax deadline, rollout milestone, and internal task, month by month.</p>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tab 02</span>
+      <h3 style="font-size:16px;">Monthly Playbook</h3>
+      <p style="margin:0;">Same timeline, opened up — click any month for the exact client-facing and internal tasks, linked straight to the template needed.</p>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tab 03</span>
+      <h3 style="font-size:16px;">Template &amp; Doc Library</h3>
+      <p style="margin:0;">Every letter, email, policy, and form — live links plus field lists for the two intake forms and two tax questionnaires.</p>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tab 04</span>
+      <h3 style="font-size:16px;">2027 Rollout Plan</h3>
+      <p style="margin:0;">The one-time sequencing for this year's full re-papering — decisions to lock, then the phased send-out.</p>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tab 05</span>
+      <h3 style="font-size:16px;">New-Hire Onboarding</h3>
+      <p style="margin:0;">Role breakdown and the exact client-onboarding flow, so a new hire knows where to jump in without live coaching.</p>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tab 06</span>
+      <h3 style="font-size:16px;">Time &amp; Invoicing</h3>
+      <p style="margin:0;">The Toggl-based time tracking workflow built around Jessica's actual day, plus the monthly invoicing cadence.</p>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tab 07</span>
+      <h3 style="font-size:16px;">Notes</h3>
+      <p style="margin:0;">Open scratch space that saves automatically in this browser — questions, pending decisions, anything to flag before a call.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TAB 1 ===================== -->
+<section class="panel" id="t1">
+  <span class="eyebrow">Tab 01</span>
+  <h2 class="panel-title">August 2026 → December 2027</h2>
+  <p class="panel-lede">Five months of build-and-prep (Aug–Dec 2026), then the full 2027 rollout and standing cycle. Every recurring tax/compliance deadline, every rollout milestone (new engagement letters, policy addendum, price increases), and every internal systems task — laid out month by month so nothing depends on memory. From January 2028 on, this same shape just repeats.</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="dot" style="background:var(--rust);"></span>Tax / compliance deadline</div>
+    <div class="legend-item"><span class="dot" style="background:var(--gold-deep);"></span>2027 rollout (letters, policy, pricing)</div>
+    <div class="legend-item"><span class="dot" style="background:var(--green);"></span>Client onboarding / 8821 tracking</div>
+    <div class="legend-item"><span class="dot" style="background:var(--ink-soft);"></span>Internal systems &amp; hiring</div>
+  </div>
+
+  <div class="ledger-strip">
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2026 · 01</span><span class="mo-name">August</span></div>
+      <div class="month-body">
+        <span class="chip internal">Lock every open decision — pricing tiers, account limits, ShareFile clause, consultation flow</span>
+        <span class="chip internal">Finalize new 2027 letter drafts (bookkeeping, tax, franchisee)</span>
+        <span class="chip onboard">Confirm ShareFile automation is mapped to the new letter versions</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2026 · 02</span><span class="mo-name">September</span></div>
+      <div class="month-body">
+        <span class="chip internal">Test the full onboarding flow end-to-end on one client before mass rollout</span>
+        <span class="chip internal">Finalize pricing menu numbers</span>
+        <span class="chip onboard">Confirm ShareFile checklist covers 8821/W-9 for the new letter set</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2026 · 03</span><span class="mo-name">October</span></div>
+      <div class="month-body">
+        <span class="chip tax">Oct 15 — extended individual/C-Corp deadline + Q3 payroll filing</span>
+        <span class="chip internal">Finalize rollout sequencing — letters go out in November, not bundled with January tax prep</span>
+        <span class="chip onboard">Confirm ShareFile auto-reminders are set for unsigned letters ahead of the Nov send</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2026 · 04</span><span class="mo-name">November</span></div>
+      <div class="month-body">
+        <span class="chip rollout">Send new 2027 Engagement Letters + Policy Addendum to ALL clients — signing deadline Dec 15</span>
+        <span class="chip rollout">Confirm final list of clients needing a price increase (e.g. John David)</span>
+        <span class="chip internal">Gives clients real runway to leave before tax season if they choose to, with zero overlap with tax messaging</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2026 · 05</span><span class="mo-name">December</span></div>
+      <div class="month-body">
+        <span class="chip tax">Dec 31 — business expense cutoff / Solo 401(k) &amp; HSA setup deadline</span>
+        <span class="chip rollout">Follow up on anyone unsigned by the Dec 15 deadline — before tax season, not during</span>
+        <span class="chip rollout">Send Year-End Policy Update email previewing any final 2027 changes</span>
+        <span class="chip internal">Final QA — only clients with a signed 2027 letter + addendum move to the January tax list</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 01</span><span class="mo-name">January</span></div>
+      <div class="month-body">
+        <span class="chip tax">W-2s to employees</span>
+        <span class="chip tax">1099-NECs to contractors</span>
+        <span class="chip tax">W-3 to SSA / FUTA 940</span>
+        <span class="chip internal">Kick off tax engagement letters + questionnaires for every tax client — only to clients already signed on the new terms</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 02</span><span class="mo-name">February</span></div>
+      <div class="month-body">
+        <span class="chip tax">1099s from banks / brokers</span>
+        <span class="chip tax">Q4 940/941 clean-up window</span>
+        <span class="chip onboard">Review ShareFile's auto-flagged 8821/W-9 gaps per client</span>
+        <span class="chip rollout">Follow up on unsigned engagement letters</span>
+        <span class="chip internal">Deploy client scripts &amp; boundary language to team</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 03</span><span class="mo-name">March</span></div>
+      <div class="month-body">
+        <span class="chip tax">Mar 15 — Partnerships &amp; S-Corps due</span>
+        <span class="chip tax">Q1 estimated tax reminder pre-work</span>
+        <span class="chip rollout">Pricing increase emails go out (staggered — see Rollout tab)</span>
+        <span class="chip internal">Peak season response-time policy live (2–3 day SLA)</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 04</span><span class="mo-name">April</span></div>
+      <div class="month-body">
+        <span class="chip tax">Apr 15 — Individuals &amp; C-Corps due</span>
+        <span class="chip tax">Q1 payroll tax filing / Q1 estimated tax</span>
+        <span class="chip tax">IRA / HSA / Solo 401(k) contribution deadline</span>
+        <span class="chip internal">Post-season retro: what broke, what template was missing</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 05</span><span class="mo-name">May</span></div>
+      <div class="month-body">
+        <span class="chip internal">Build/finalize SOP tutorial videos for each template</span>
+        <span class="chip onboard">Extend ShareFile automation to rush-fee/late-fee triggers</span>
+        <span class="chip onboard">Review franchisee accounts — apply account-limit tiers</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 06</span><span class="mo-name">June</span></div>
+      <div class="month-body">
+        <span class="chip tax">Jun 15 — Q2 estimated tax + Q2 payroll filing</span>
+        <span class="chip internal">Mid-year engagement letter compliance check (100% signed?)</span>
+        <span class="chip internal">Evaluate hiring need for Q3/Q4</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 07</span><span class="mo-name">July</span></div>
+      <div class="month-body">
+        <span class="chip onboard">If hiring: run new team member through onboarding flow (Tab 05)</span>
+        <span class="chip internal">Refresh pricing menu / fee structure for next cycle</span>
+        <span class="chip internal">Confirm rush-fee &amp; late-fee triggers are firing correctly</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 08</span><span class="mo-name">August</span></div>
+      <div class="month-body">
+        <span class="chip internal">Franchisee engagement letter finalized as its own standard doc</span>
+        <span class="chip internal">Payroll add-on/amendment doc finalized for scope changes</span>
+        <span class="chip onboard">Mid-year ShareFile tracker audit #2</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 09</span><span class="mo-name">September</span></div>
+      <div class="month-body">
+        <span class="chip tax">Sept 15 — Q3 estimated tax + extended Partnership/S-Corp deadline</span>
+        <span class="chip internal">Extension-filer check-in email + document push</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 10</span><span class="mo-name">October</span></div>
+      <div class="month-body">
+        <span class="chip tax">Oct 15 — Q3 payroll filing + extended individual/C-Corp deadline</span>
+        <span class="chip internal">Close out extension season — file completeness audit</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 11</span><span class="mo-name">November</span></div>
+      <div class="month-body">
+        <span class="chip internal">Draft 2028 pricing menu / annual price-review clause trigger</span>
+        <span class="chip internal">Draft Year-End Policy Update email for December send</span>
+        <span class="chip onboard">Confirm every active client has a signed tax engagement letter on file</span>
+      </div>
+    </div>
+
+    <div class="month-row">
+      <div class="month-tab"><span class="mo-idx">2027 · 12</span><span class="mo-name">December</span></div>
+      <div class="month-body">
+        <span class="chip tax">Dec 31 — business expense cutoff / Solo 401(k) &amp; HSA setup deadline</span>
+        <span class="chip rollout">Send Year-End Policy Update email to all clients (2028 changes preview)</span>
+        <span class="chip internal">Playbook is now the standing template — 2028 reuses this exact shape</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout automate" style="margin-top:26px;">
+    <div class="callout-label">⚙ Already automated via ShareFile</div>
+    <ul>
+      <li>New-client onboarding, engagement letter delivery, and 8821/W-9/setup-form tracking already run through ShareFile — the Aug–Sept 2026 build window (left) is about pointing that existing automation at the <i>new</i> 2027 letter versions, not building it from scratch</li>
+      <li>What's left to layer on: rush-fee/late-fee auto-triggers (target: May 2027) and scheduled sends for the standing Year-End/January tax-letter push, tied to this same calendar</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== TAB 2 ===================== -->
+<section class="panel" id="t2">
+  <span class="eyebrow">Tab 02</span>
+  <h2 class="panel-title">Monthly Playbook</h2>
+  <p class="panel-lede">Open a month to see exactly what has to happen — client-facing and internal — and which template to pull. Runs Aug 2026 through Dec 2027, then the same 12-month shape repeats every year after.</p>
+
+  <div id="accordion"></div>
+</section>
+
+<!-- ===================== TAB 3 ===================== -->
+<section class="panel" id="t3">
+  <span class="eyebrow">Tab 03</span>
+  <h2 class="panel-title">Template &amp; Document Library</h2>
+  <p class="panel-lede">Every email and letter from your notes, cleaned into a reference set. Open decisions from Jessica's meeting notes are called out in red on the relevant doc — resolve those once and this becomes the permanent standard.</p>
+
+  <div class="callout" style="border-color:#cfae5f; background:var(--gold-pale);">
+    <div class="callout-label" style="color:var(--gold-deep);">🔗 Live Forms — Quick Access</div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;">
+      <a class="template-link" href="https://docs.google.com/forms/d/e/1FAIpQLScpyzHD_GPCkrNS-XCttOLeLv3oDV6IBTiaXNqHT5cCQlsk-g/viewform?usp=sharing" target="_blank" rel="noopener" style="background:var(--ink);">Books Client Onboarding ↗</a>
+      <a class="template-link" href="https://forms.gle/p4MPNvHohqoPK7UdA" target="_blank" rel="noopener" style="background:var(--ink);">Tax Client Onboarding ↗</a>
+      <a class="template-link" href="https://forms.gle/dhVkXJFrDxZraJew9" target="_blank" rel="noopener" style="background:var(--ink);">Personal Tax Questionnaire ↗</a>
+      <a class="template-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdgHRUIlv3cBIbyRWVnd5W3D1Zy_MMqVYJmqd4l8wSoA4zkcg/viewform?usp=sharing" target="_blank" rel="noopener" style="background:var(--ink);">Business Tax Questionnaire ↗</a>
+    </div>
+    <p style="font-size:12.5px; color:var(--ink-soft); margin:10px 0 0 0;">All four still need their fields built out — see the field lists under their doc cards below, including the exact ShareFile queue-policy copy and cross-link confirmation-message text for each.</p>
+  </div>
+
+  <div class="jump-index">
+    <a href="#doc-bk">Bookkeeping Engagement Letter</a>
+    <a href="#doc-tax">Tax Engagement Letter</a>
+    <a href="#doc-franchise">Franchisee Engagement Letter</a>
+    <a href="#doc-onboard">Standard Onboarding Email</a>
+    <a href="#doc-franchise-onboard">Franchisee Onboarding Email</a>
+    <a href="#doc-yearend">Year-End Policy Update Email</a>
+    <a href="#doc-priceincrease">Pricing Increase Email</a>
+    <a href="#doc-policy">Policy Addendum (full)</a>
+    <a href="#doc-pricing">Pricing Menu &amp; Fee Structure</a>
+    <a href="#doc-scripts">Client Scripts</a>
+    <a href="#doc-onboard-form">Books Client Onboarding — Field List</a>
+    <a href="#doc-tax-onboarding-form">Tax Client Onboarding — Field List</a>
+    <a href="#doc-tax-questionnaire">Personal Tax Questionnaire — Field List</a>
+    <a href="#doc-business-tax-questionnaire">Business Tax Questionnaire — Field List</a>
+  </div>
+
+  <!-- Bookkeeping Engagement Letter -->
+  <div class="doc-card" id="doc-bk">
+    <div class="doc-card-head"><h3>Bookkeeping Engagement Letter (Standard)</h3><span class="doc-tag">Send: onboarding + Jan re-sign</span></div>
+    <div class="doc-card-body">
+      <h4>Scope included</h4>
+      <ul>
+        <li>Monthly bookkeeping — $500/month, $150 one-time setup</li>
+        <li>Bank &amp; card reconciliation, up to 5 accounts (personal included if not kept separate)</li>
+        <li>Monthly financial reports, job/project profitability reporting</li>
+        <li>QBO support, ongoing email/text/phone support, step-by-step tutorials</li>
+        <li>Year-end tax prep support, 1099-NEC/MISC filings, general tax planning support</li>
+      </ul>
+      <h4>Payroll add-on (if selected)</h4>
+      <ul><li>$100/month, $250 one-time setup — processing, filings, compliance support</li></ul>
+      <h4>Billed separately</h4>
+      <ul><li>Income tax prep, insurance audit support, clean-up/catch-up, amended filings, advisory/forecasting</li></ul>
+      <h4>Client responsibilities &amp; terms</h4>
+      <ul>
+        <li>Respond to info requests within 5 business days</li>
+        <li>Month-to-month, 30 days written notice to terminate, outstanding balances due before termination</li>
+        <li>Billed monthly, due on receipt, paid via ACH (no processing fee to client)</li>
+      </ul>
+      <div class="callout automate">
+        <div class="callout-label">✓ Resolved — ShareFile-only clause</div>
+        <p style="margin:0; font-size:13.5px;">Locked in: nothing is accepted outside ShareFile — no texts, emailed attachments, or Google Docs. Add this clause to the letter, and use the <a href="#doc-scripts" style="color:var(--gold-deep); font-weight:600;">redirect scripts</a> for anyone who sends docs elsewhere anyway.</p>
+      </div>
+      <div class="callout decision">
+        <div class="callout-label">◆ Open decision from notes</div>
+        <ul>
+          <li>Add 1099/W-2 pricing tiers — first 15 or 20 included, extra beyond that priced separately</li>
+          <li>Set final account limit: proposal is 7 monthly + 3 annual (loans/liabilities) = 10 max, then <b>+$50/account</b> beyond that</li>
+          <li>Decide: one letter with payroll as an add-on suggestion, or two versions (with/without payroll pricing shown) — plus a short amendment doc for adding/removing payroll later</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tax Engagement Letter -->
+  <div class="doc-card" id="doc-tax">
+    <div class="doc-card-head"><h3>Tax Engagement Letter</h3><span class="doc-tag">Send: every tax client, every year</span></div>
+    <div class="doc-card-body">
+      <h4>Purpose</h4>
+      <p style="margin:0 0 10px 0;">Confirms tax prep services only — no audit representation unless separately agreed. This is the letter Jessica flagged she needs to actually send to <b>every</b> client, every season — not just bookkeeping clients.</p>
+      <h4>Client responsibilities</h4>
+      <ul>
+        <li>Provide complete/accurate info; submit documents by the stated cutoff (recommend March 15 or April 1)</li>
+        <li>Review the completed return before signing</li>
+        <li>Late docs → extension filed free of charge, but no completion guarantee before the filing deadline</li>
+      </ul>
+      <h4>Fees &amp; extensions</h4>
+      <ul>
+        <li>Fee varies by complexity — insert base price or starting price on each letter</li>
+        <li>Payment due prior to filing; extension ≠ extension of payment; estimated payments remain client's responsibility</li>
+      </ul>
+      <h4>Pairs with</h4>
+      <p style="margin:0;">Send the <a href="https://forms.gle/dhVkXJFrDxZraJew9" target="_blank" rel="noopener" style="color:var(--gold-deep); font-weight:600;">Personal Tax Questionnaire ↗</a> alongside this letter for every tax client — add the <a href="#doc-business-tax-questionnaire" style="color:var(--gold-deep); font-weight:600;">Business Tax Questionnaire</a> too for anyone filing a business return. Both still need their fields built out; see the lists below.</p>
+      <div class="callout decision">
+        <div class="callout-label">◆ Open decision from notes</div>
+        <ul><li>Fill in the actual cutoff date and starting price range before this becomes the standing template</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Franchisee Engagement Letter -->
+  <div class="doc-card" id="doc-franchise">
+    <div class="doc-card-head"><h3>Franchisee Engagement Letter</h3><span class="doc-tag">Send: franchisee onboarding</span></div>
+    <div class="doc-card-body">
+      <h4>Scope included</h4>
+      <ul>
+        <li>Monthly bookkeeping — $450/month, $250 setup</li>
+        <li>Bank/card reconciliation, monthly reporting, job/project profitability</li>
+        <li>QBO assistance, year-end prep + 1099 filings, tax planning support</li>
+        <li>Payroll — $100/month, $150 setup</li>
+        <li>Additional: insurance audits, income tax prep</li>
+      </ul>
+      <div class="callout decision">
+        <div class="callout-label">◆ Open decision from notes</div>
+        <ul>
+          <li>Confirm whether this needs to stay a distinct letter or can merge with the standard bookkeeping+payroll letter</li>
+          <li>Franchisee account limit: notes flag Shawn/Blue-type accounts (31+ accounts, extra card) take Lara 5x longer — proposal is <b>$500 covers up to 4 max accounts</b>, extra billed per-account or hourly beyond that</li>
+          <li>Decide if payroll should be its own signable attachment rather than baked into one letter</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard onboarding email -->
+  <div class="doc-card" id="doc-onboard">
+    <div class="doc-card-head"><h3>Standard Onboarding Email (Books)</h3><span class="doc-tag">Trigger: any new bookkeeping client, non-franchisee</span></div>
+    <div class="doc-card-body">
+      <div class="email-body">Hi [Client Name],
+
+I hope you're doing well!
+
+Attached is your engagement letter outlining the scope of services, pricing, and general policies for working together. This helps ensure everything is clear and structured as we move forward.
+
+Please also take a few minutes to complete your Client Onboarding Form — this gets your accounts, contacts, and documents set up correctly from day one:
+https://docs.google.com/forms/d/e/1FAIpQLScpyzHD_GPCkrNS-XCttOLeLv3oDV6IBTiaXNqHT5cCQlsk-g/viewform?usp=sharing
+
+Please review and sign the engagement letter at your convenience. If you have any questions or would like to adjust anything, I'm happy to walk through it with you.
+
+Once both are complete, we'll finalize your setup and continue moving forward with your bookkeeping and/or tax services.
+
+Looking forward to working together!
+
+Best,
+EZ Accounting Pro</div>
+      <div class="callout decision">
+        <div class="callout-label">◆ Open decision from notes</div>
+        <ul><li>Both onboarding forms are still skeletons (field lists below) — finish building them out before this email goes live, since Books Onboarding is what now collects the W-9 info the ShareFile tracker runs on</li>
+        <li>This email links Books Onboarding only. A tax-only signup should get the Tax Client Onboarding link instead — the cross-link on each form's confirmation page catches anyone who needs both</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Franchisee onboarding email -->
+  <div class="doc-card" id="doc-franchise-onboard">
+    <div class="doc-card-head"><h3>Franchisee Onboarding Email</h3><span class="doc-tag">Trigger: new franchisee</span></div>
+    <div class="doc-card-body">
+      <div class="email-body">Hi [Client Name],
+
+Welcome! We're excited to support you.
+
+To get everything set up properly, there are two quick steps:
+
+1. Review &amp; Sign Engagement Letter
+Attached is your engagement letter outlining services, pricing, and policies. Please review and sign at your convenience.
+
+2. Complete Setup Form
+Please fill out this form so we can gather the necessary details for your account:
+https://docs.google.com/forms/d/e/1FAIpQLScpyzHD_GPCkrNS-XCttOLeLv3oDV6IBTiaXNqHT5cCQlsk-g/viewform?usp=sharing
+
+This form helps us ensure your bookkeeping and reporting are set up accurately from the start.
+
+Once both steps are completed, we'll finalize your setup and begin services.
+
+If you have any questions along the way, feel free to reach out!
+
+Best,
+EZ Accounting Pro</div>
+      <div class="callout decision">        <div class="callout-label">◆ Open decision from notes</div>
+        <ul><li>Jessica already has a franchisee send-out in use — decide whether to fold it into this version or keep hers as the standard</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Year end email -->
+  <div class="doc-card" id="doc-yearend">
+    <div class="doc-card-head"><h3>Year-End Policy Update Email</h3><span class="doc-tag">Send: December, all active clients</span></div>
+    <div class="doc-card-body">
+      <div class="email-body">Hi [Client Name],
+
+As we approach the new year, we're implementing a few updates to improve efficiency, communication, and overall service quality for all clients.
+
+These updates are designed to ensure timely deliverables, reduce last-minute stress, and allow us to continue providing the high level of support you've come to expect.
+
+Key updates include:
+— Structured document submission timelines
+— Clear turnaround times and communication expectations
+— Expanded service options and support levels
+
+You'll receive an updated engagement agreement reflecting these changes.
+
+We truly value your business and look forward to supporting you in 2027!
+
+Warmly,
+EZ Accounting Pro</div>
+      <div class="callout decision">
+        <div class="callout-label">◆ Open decision from notes</div>
+        <ul>
+          <li>Sequencing call: send new engagement letters to everyone at once, then a separate pricing-increase email only to clients who need one (e.g. John David) — or bundle both into one send?</li>
+          <li>Once decided, this becomes the fixed sequence for every future December</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing increase email -->
+  <div class="doc-card" id="doc-priceincrease">
+    <div class="doc-card-head"><h3>Pricing Increase Email</h3><span class="doc-tag">Send: to flagged clients only</span></div>
+    <div class="doc-card-body">
+      <div class="email-body">Hi [Client Name],
+
+We're incredibly grateful for the opportunity to support your business.
+
+Over time, we've expanded the level of service, support, and expertise we provide to better serve our clients. In order to continue delivering high-quality, reliable service, we will be adjusting our pricing beginning [DATE].
+
+Your updated monthly rate will be: $[NEW PRICE]
+
+This adjustment reflects the continued commitment to accuracy, responsiveness, and proactive support.
+
+If you have any questions or would like to review your service package, we're happy to connect.
+
+We appreciate your understanding and continued trust.
+
+Best,
+EZ Accounting Pro</div>
+      <p style="margin-top:10px;">Follow immediately with the new engagement letter reflecting the pricing menu/tier once this is sent.</p>
+    </div>
+  </div>
+
+  <!-- Policy addendum -->
+  <div class="doc-card" id="doc-policy">
+    <div class="doc-card-head"><h3>Client Service Policies &amp; Expectations Addendum</h3><span class="doc-tag">Effective Jan 1, 2027 — every client signs</span></div>
+    <div class="doc-card-body">
+      <h4>Communication &amp; response times</h4>
+      <ul><li>Standard 1–2 business days; peak season 2–3 days; after-hours messages answered next business day</li></ul>
+      <h4>Document submission &amp; deadlines</h4>
+      <ul>
+        <li>5 business days to respond to requests</li>
+        <li>Monthly bookkeeping docs due by the 10th of each month</li>
+        <li>Tax clients: submit by the stated cutoff (recommend March 15)</li>
+      </ul>
+      <h4>Turnaround</h4>
+      <ul><li>Bookkeeping: 10–15 business days after all docs received; tax returns completed in order received</li></ul>
+      <h4>Rush / expedited fees</h4>
+      <ul><li>$100 minimum, or 25% of the service fee — whichever is greater</li></ul>
+      <h4>Late payment</h4>
+      <ul><li>$25 late fee after 7 days; service suspension possible after 14 days past due</li></ul>
+      <h4>Scope &amp; additional work</h4>
+      <ul><li>Cleanup, amended returns, extra reporting, advisory — billed at $100–$150/hr, communicated in advance where possible</li></ul>
+      <h4>Professional conduct clause</h4>
+      <ul><li>EZ Accounting Pro may discontinue service if communication becomes unprofessional or misaligned with standards</li></ul>
+      <h4>Document requests &amp; follow-up</h4>
+      <ul>
+        <li>Up to 3 requests for missing info; after that, work may pause</li>
+        <li>Two warnings, then a 3–6 month probationary status requiring full/timely compliance, or possible termination</li>
+      </ul>
+      <h4>Payment &amp; account standing</h4>
+      <ul>
+        <li>No activity/payment for 90 days → possible termination</li>
+        <li>Unresolved balances may go to collections</li>
+      </ul>
+      <h4>Service alignment &amp; termination</h4>
+      <ul>
+        <li>High-touch clients may be moved to a higher tier</li>
+        <li>Either party may terminate with 30 days written notice; balances due before final file transfer</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Pricing menu -->
+  <div class="doc-card" id="doc-pricing">
+    <div class="doc-card-head"><h3>Pricing Menu &amp; Fee Structure</h3><span class="doc-tag">Use as sales tool + boundary reinforcement</span></div>
+    <div class="doc-card-body">
+      <h4>Service tiers</h4>
+      <ul>
+        <li><b>Starter Bookkeeping</b> — $450/mo: reconciliations, financial reports, email support</li>
+        <li><b>Growth Package</b> — $550–$750/mo: + job costing/profitability, priority support, monthly review call</li>
+        <li><b>Full-Service Package</b> — $750–$1,200+/mo: full bookkeeping + payroll, advisory + tax planning, priority turnaround</li>
+      </ul>
+      <h4>Add-ons</h4>
+      <ul>
+        <li>Payroll: $100/mo + $150 setup</li>
+        <li>Cleanup/catch-up: $75–$125/hr (fee structure doc says $100–$150/hr — reconcile before finalizing)</li>
+        <li>Tax prep: starting at $300+ personal / $750+ business</li>
+        <li>Advisory calls: $150/hr</li>
+      </ul>
+      <h4>Behavior-based fees</h4>
+      <ul>
+        <li>Rush fee: $100 min or 25% of service, whichever is higher</li>
+        <li>Late payment: $25 after 7 days, pause after 14</li>
+        <li>Disorganized/cleanup work: automatically billed hourly</li>
+      </ul>
+      <h4>Consultation flow</h4>
+      <ul>
+        <li>First 15–20 minutes free, then either: 1 hr with bookkeeper/manager ($100), escalated to Jessica if needed — <b>or</b> — client chooses to pay for time directly with Jessica on her schedule</li>
+      </ul>
+      <div class="callout decision">
+        <div class="callout-label">◆ Open decision from notes</div>
+        <ul><li>Pick one consultation flow as the standard — the two options in the notes need to collapse into a single documented path so intake staff aren't guessing</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client scripts -->
+  <div class="doc-card" id="doc-scripts">
+    <div class="doc-card-head"><h3>Client Scripts &amp; Difficult-Client Filters</h3><span class="doc-tag">Reference: any team member, anytime</span></div>
+    <div class="doc-card-body">
+      <h4>Scripts</h4>
+      <div class="script-q">When a client is pushy / last-minute</div>
+      <div class="script-a">"I totally understand the urgency. Based on our current workflow, we'll be able to complete this within our standard turnaround time. If you'd like to move it up in priority, I can offer an expedited option."</div>
+      <div class="script-q">When it's their fault (documents were late)</div>
+      <div class="script-a">"At this point, we'll proceed based on our standard timeline since the documents were received after the requested deadline. Let me know if you'd like to explore expedited processing."</div>
+      <div class="script-q">When they push back on pricing</div>
+      <div class="script-a">"I completely understand wanting to be mindful of costs. Our pricing reflects the level of accuracy, responsiveness, and support we provide. If needed, we can absolutely look at a lower-touch package that better fits your budget."</div>
+      <div class="script-q">When they keep asking for extras</div>
+      <div class="script-a">"That's a great question — happy to help with that. Since it falls outside the current scope, I can take care of it as an additional request."</div>
+      <div class="script-q">Setting a boundary</div>
+      <div class="script-a">"To keep everything running smoothly for all clients, we follow a structured workflow and timeline. I'll make sure this is handled as quickly as possible within that."</div>
+      <div class="script-q">If you want them gone</div>
+      <div class="script-a">"It may make sense to reassess whether this service structure is the best fit for your needs. I'm happy to discuss options or next steps."</div>
+
+      <div class="callout decision" style="margin-top:18px;">
+        <div class="callout-label">◆ Resolved — ShareFile-only clause, locked in</div>
+        <ul><li>Nothing gets accepted outside ShareFile — no texts, no emailed attachments, no Google Docs. Confirmation always comes back by email with Maddie cc'd, never by replying in the original channel — replying to the text would still be texting.</li></ul>
+      </div>
+      <h4 style="margin-top:16px;">ShareFile-only redirects — use whenever a client sends docs anywhere but ShareFile</h4>
+      <div class="script-q">Text message reply</div>
+      <div class="script-a">"Hi [Name]! Thanks for reaching out — for security, we can't accept documents or updates over text. Please upload this to your ShareFile folder (or email Maddie if you don't have access and she can send you the link), and then reply by EMAIL with Maddie cc'd once it's in. We'll take it from there! Thank you!"</div>
+      <div class="script-q">Email reply — Subject: Please Upload via ShareFile</div>
+      <div class="script-a">"Hi [Name], Thanks for sending this over! To keep everything secure and your place in the queue confirmed, we're not able to accept files or updates through email. Please upload this to your ShareFile folder (or email Maddie if you don't have access and she can send you the link), and then reply by EMAIL with Maddie cc'd once it's in. We'll take it from there! Thank you!"</div>
+      <div class="script-q">Catch-all — Slack, DM, voicemail follow-up, anywhere else</div>
+      <div class="script-a">"Thanks for this! Everything needs to go through ShareFile so it's tracked and secure — nothing sent here will be reviewed or actioned. Please upload it to your ShareFile folder (or email Maddie if you don't have access and she can send you the link), and then reply by EMAIL with Maddie cc'd once it's in. We'll take it from there! Thank you!"</div>
+
+      <h4 style="margin-top:20px;">Difficult-client filter language (for letters/addendum)</h4>
+      <ul>
+        <li><b>Organization &amp; timeliness</b> — repeated delays/incomplete submissions may mean added fees or adjusted timelines</li>
+        <li><b>Respect &amp; communication</b> — right to disengage if communication isn't respectful/constructive</li>
+        <li><b>Non-urgency culture</b> — "requests resulting from a lack of prior planning do not constitute emergencies"</li>
+        <li><b>Scope creep protection</b> — anything outside agreed scope is quoted and billed separately</li>
+        <li><b>High-touch clients pay more</b> — frequent-contact clients recommended for a higher tier</li>
+        <li><b>Chronic-late filter</b> — consistent late submitters may move to extended timelines or added fees</li>
+        <li><b>Exit clause</b> — right to discontinue if the relationship is no longer aligned, with notice</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Books Client Onboarding field list -->
+  <div class="doc-card" id="doc-onboard-form">
+    <div class="doc-card-head"><h3>EZ Accounting Client Onboarding (Books) — Full Field List</h3><span class="doc-tag">Build into: <a href="https://docs.google.com/forms/d/1uB-ZgIGGCxD4oJneGqrYGE2zNSGDhLD8rpFuFhPdcMI/edit" target="_blank" rel="noopener" style="color:var(--ink);">edit form ↗</a> · <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyzHD_GPCkrNS-XCttOLeLv3oDV6IBTiaXNqHT5cCQlsk-g/viewform?usp=sharing" target="_blank" rel="noopener" style="color:var(--ink);">preview live ↗</a></span></div>
+    <div class="doc-card-body">
+      <div class="callout automate">
+        <div class="callout-label">⚙ Rule for both onboarding forms</div>
+        <p style="margin:0; font-size:13.5px;">Questions only — <b>zero file uploads, zero SSN/EIN typed in</b>. Every real document (W-9, prior returns, driver's license, 8821) is collected through ShareFile instead, same pattern as the tax questionnaires. This is what fixes the security concern for good, instead of picking through which uploads feel "safe enough" for a Google Form.</p>
+      </div>
+      <ol style="margin:16px 0 0 20px; padding:0; font-size:13.8px; line-height:1.85;">
+        <li>Full legal name * — Short answer</li>
+        <li>Business legal name(s) — note entity type next to each if more than one * — Paragraph</li>
+        <li>Preferred email * — Short answer</li>
+        <li>Phone number * — Short answer</li>
+        <li>Business mailing address(es) * — Paragraph</li>
+        <li>Service tier — Starter / Growth / Full-Service — Multiple choice <i>(leave optional if already set on the sales call)</i></li>
+        <li>Do you need payroll services? * — Yes/No
+          <ol type="a" style="margin:4px 0 0 20px;"><li>If yes: current payroll provider, if any — Short answer</li></ol>
+        </li>
+        <li>Is this a franchise location? * — Yes/No</li>
+        <li>How many bank accounts and credit cards need to be connected? * — Number</li>
+        <li>QuickBooks Online status * — Active subscription / Have QBO but needs cleanup / Need QBO set up</li>
+        <li>Currently working with another bookkeeper? * — Yes/No
+          <ol type="a" style="margin:4px 0 0 20px;"><li>If yes: who, and do you need help with the transition? — Short answer</li></ol>
+        </li>
+        <li>How did you hear about us? — Short answer (optional)</li>
+        <li>Anything else we should know? — Paragraph (optional)</li>
+        <li>Acknowledgment * — Checkbox: "I confirm I have reviewed and signed my engagement letter"</li>
+      </ol>
+      <div class="callout automate" style="margin-top:16px;">
+        <div class="callout-label">⚙ Confirmation message (shown after submit) — cross-links to Tax Onboarding</div>
+        <p style="margin:0; font-style:italic; font-size:13.5px;">"Thanks for completing your onboarding! We'll follow up with a secure ShareFile link to collect your W-9 and any other documents. Also need tax prep? Complete the Tax Client Onboarding here: <a href="https://forms.gle/p4MPNvHohqoPK7UdA" target="_blank" rel="noopener">[LINK]</a>"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tax Client Onboarding field list -->
+  <div class="doc-card" id="doc-tax-onboarding-form">
+    <div class="doc-card-head"><h3>EZ Accounting Pro Tax Client Onboarding — Full Field List</h3><span class="doc-tag">Build into: <a href="https://forms.gle/p4MPNvHohqoPK7UdA" target="_blank" rel="noopener" style="color:var(--ink);">live form ↗</a></span></div>
+    <div class="doc-card-body">
+      <p style="margin:0 0 12px 0;">One-time setup form — not the same as the Personal/Business Tax Questionnaire, which repeats every year to collect that year's numbers. Same no-uploads rule as the Books form above.</p>
+      <ol style="margin:0 0 0 20px; padding:0; font-size:13.8px; line-height:1.85;">
+        <li>Full legal name * — Short answer</li>
+        <li>Business legal name(s), if applicable — note entity type next to each — Paragraph (optional if individual-only)</li>
+        <li>Preferred email * — Short answer</li>
+        <li>Phone number * — Short answer</li>
+        <li>Mailing address * — Short answer</li>
+        <li>What filing do you need? * — Personal only / Business only / Both — Multiple choice</li>
+        <li>Filing status — Single / Married Filing Jointly / Married Filing Separately / Head of Household <i>(only shows if "Personal" selected — use Forms' section branching)</i></li>
+        <li>If Married Filing Jointly — spouse's full name — Short answer (conditional)</li>
+        <li>Currently working with another tax preparer/CPA? * — Yes/No
+          <ol type="a" style="margin:4px 0 0 20px;"><li>If yes: who, and do you need help with the transition? — Short answer</li></ol>
+        </li>
+        <li>Any outstanding IRS or state notices, audits, or back taxes owed? * — Yes/No
+          <ol type="a" style="margin:4px 0 0 20px;"><li>If yes: brief description — Paragraph <i>(flag for staff review before intake proceeds — this is the one that saves a scramble in March)</i></li></ol>
+        </li>
+        <li>Need to file in more than one state? — Yes/No
+          <ol type="a" style="margin:4px 0 0 20px;"><li>If yes: which states — Short answer</li></ol>
+        </li>
+        <li>Do you also need ongoing bookkeeping? — Yes/No</li>
+        <li>How did you hear about us? — Short answer (optional)</li>
+        <li>Anything else we should know? — Paragraph (optional)</li>
+        <li>Acknowledgment * — Checkbox: "I confirm I have reviewed and signed my engagement letter"</li>
+      </ol>
+      <div class="callout automate" style="margin-top:16px;">
+        <div class="callout-label">⚙ Confirmation message (shown after submit) — cross-links to Books Onboarding</div>
+        <p style="margin:0; font-style:italic; font-size:13.5px;">"Thanks for completing your onboarding! We'll follow up with your personalized document checklist and a secure ShareFile link — that's where we'll collect your SSN/EIN, last year's return, driver's license, and Form 8821. Also need bookkeeping? Complete the Client Onboarding here: <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyzHD_GPCkrNS-XCttOLeLv3oDV6IBTiaXNqHT5cCQlsk-g/viewform?usp=sharing" target="_blank" rel="noopener">[LINK]</a>"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal Tax Questionnaire field list -->
+  <div class="doc-card" id="doc-tax-questionnaire">
+    <div class="doc-card-head"><h3>Personal / Individual Tax Questionnaire — Recommended Field List</h3><span class="doc-tag">Build into: <a href="https://forms.gle/dhVkXJFrDxZraJew9" target="_blank" rel="noopener" style="color:var(--ink);">live form ↗</a></span></div>
+    <div class="doc-card-body">
+      <p style="margin:0 0 12px 0;">Kept separate from the Business Tax Questionnaire below — send this to every tax client; business owners/partners get this <i>and</i> the business one, since K-1s flow through to the personal return. This form is step one of a three-step intake — it does not collect the full document set.</p>
+      <div class="callout automate">
+        <div class="callout-label">⚙ The actual client process</div>
+        <ol style="margin:0 0 12px 18px; padding:0; font-size:13.8px; line-height:1.6;">
+          <li>Client completes this questionnaire — at this stage we only ask for a copy of <b>last year's return</b>, nothing else</li>
+          <li>EZ Accounting Pro reviews the answers and sends back a <b>personalized document checklist</b> built for that client's exact situation</li>
+          <li>That email includes their <b>ShareFile upload link</b> — client uploads everything on the checklist there</li>
+        </ol>
+        <div class="callout-label" style="margin-top:4px;">⚙ Paste into the form's description field</div>
+        <p style="margin:0 0 10px 0; font-style:italic;">"Please complete this questionnaire and attach a copy of last year's return. Once reviewed, we'll send you a personalized document checklist along with your ShareFile upload link. Everything on that checklist must be uploaded to ShareFile — text messages, emails, and Google Docs are not accepted in place of a ShareFile upload unless you're on our highest-tier plan. Your place in the preparation queue is not held until every document has been fully submitted through ShareFile."</p>
+        <p style="margin:0; font-size:12.8px;"><b>Required checkbox before submit:</b> "I understand my place in the preparation queue is not held until all requested documents are fully submitted through ShareFile."</p>
+      </div>
+      <h4>Basics</h4>
+      <ul>
+        <li>Tax year</li>
+        <li>Filing status — any changes since last year?</li>
+        <li>Life changes — marriage, divorce, new dependent, address change</li>
+      </ul>
+      <h4>Income sources (checklist)</h4>
+      <ul>
+        <li>W-2 wages</li>
+        <li>1099-NEC / 1099-MISC (self-employment/contractor)</li>
+        <li>1099-INT / 1099-DIV (interest, dividends)</li>
+        <li>Rental income</li>
+        <li>K-1 received (partnership/S-Corp pass-through)</li>
+        <li>Other — describe</li>
+      </ul>
+      <h4>Deductions &amp; adjustments</h4>
+      <ul>
+        <li>Retirement contributions — IRA / Solo 401(k) / HSA, amounts</li>
+        <li>Estimated tax payments made this year — dates and amounts</li>
+        <li>Major purchases or sales — home, vehicle</li>
+        <li>New or closed bank accounts, loans, or lines of credit</li>
+      </ul>
+      <h4>Only document requested on this form</h4>
+      <p style="margin:0 0 8px 0;">Just one upload field here — everything else comes later via the personalized checklist, not this form:</p>
+      <ul>
+        <li>Prior-year return (upload) — the one document needed before staff can build the personalized checklist</li>
+      </ul>
+      <h4>Wrap-up</h4>
+      <ul>
+        <li>Preferred filing timeline — standard vs. extension expected</li>
+        <li>E-file authorization acknowledgment (Form 8879)</li>
+        <li>Anything else we should know before we start your return?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Business Tax Questionnaire field list -->
+  <div class="doc-card" id="doc-business-tax-questionnaire">
+    <div class="doc-card-head"><h3>Business Tax Questionnaire — Recommended Field List</h3><span class="doc-tag">Build into: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdgHRUIlv3cBIbyRWVnd5W3D1Zy_MMqVYJmqd4l8wSoA4zkcg/viewform?usp=sharing" target="_blank" rel="noopener" style="color:var(--ink);">live form ↗</a></span></div>
+    <div class="doc-card-body">
+      <div class="callout decision">
+        <div class="callout-label">◆ Resolved — kept as a separate, business-only form</div>
+        <ul><li>Runs alongside the Personal/Individual Tax Questionnaire, not instead of it — business owners/partners get both, since K-1s flow to their personal return</li></ul>
+      </div>
+      <p style="margin:12px 0;">Same purpose as the Personal Tax Questionnaire, but built for S-Corp/Partnership/C-Corp clients where individual return questions (dependents, W-2 wages) don't apply and entity-specific items do. Same three-step process — this form does not collect the full document set.</p>
+      <div class="callout automate">
+        <div class="callout-label">⚙ The actual client process</div>
+        <ol style="margin:0 0 12px 18px; padding:0; font-size:13.8px; line-height:1.6;">
+          <li>Client completes this questionnaire — at this stage we only ask for a copy of <b>last year's business return</b>, nothing else</li>
+          <li>EZ Accounting Pro reviews the answers and sends back a <b>personalized document checklist</b> built for that client's entity type and situation</li>
+          <li>That email includes their <b>ShareFile upload link</b> — client uploads everything on the checklist there</li>
+        </ol>
+        <div class="callout-label" style="margin-top:4px;">⚙ Paste into the form's description field</div>
+        <p style="margin:0 0 10px 0; font-style:italic;">"Please complete this questionnaire and attach a copy of last year's business return. Once reviewed, we'll send you a personalized document checklist along with your ShareFile upload link. Everything on that checklist must be uploaded to ShareFile — text messages, emails, and Google Docs are not accepted in place of a ShareFile upload unless you're on our highest-tier plan. Your place in the preparation queue is not held until every document has been fully submitted through ShareFile."</p>
+        <p style="margin:0; font-size:12.8px;"><b>Required checkbox before submit:</b> "I understand my place in the preparation queue is not held until all requested documents are fully submitted through ShareFile."</p>
+      </div>
+      <h4>Basics</h4>
+      <ul>
+        <li>Tax year</li>
+        <li>Entity type (S-Corp, Partnership, C-Corp, LLC taxed as ___) — any changes/elections since last year</li>
+        <li>Number of owners/partners/shareholders and ownership % changes</li>
+      </ul>
+      <h4>Income &amp; books</h4>
+      <ul>
+        <li>Books kept in QuickBooks Online through EZ Accounting Pro, or provided separately?</li>
+        <li>Gross receipts / total revenue for the year</li>
+        <li>Any income not reflected in the books (cash, barter, other)</li>
+      </ul>
+      <h4>Payroll &amp; owner compensation</h4>
+      <ul>
+        <li>Officer/owner compensation paid through payroll — amounts</li>
+        <li>Guaranteed payments to partners (if applicable)</li>
+        <li>Number of W-2 employees and 1099 contractors for the year</li>
+      </ul>
+      <h4>Assets &amp; deductions</h4>
+      <ul>
+        <li>Major asset purchases/sales — equipment, vehicles, property (for depreciation/Section 179)</li>
+        <li>Home office or business-use-of-vehicle details, if applicable</li>
+        <li>Business loans or lines of credit — new, paid off, or outstanding balances</li>
+      </ul>
+      <h4>Estimated payments (asked here, not uploaded)</h4>
+      <ul>
+        <li>Quarterly estimated tax payments made this year — dates and amounts</li>
+        <li>K-1s issued to partners/shareholders — confirm count and recipient info</li>
+      </ul>
+      <h4>Only document requested on this form</h4>
+      <p style="margin:0 0 8px 0;">Just one upload field here — everything else comes later via the personalized checklist, not this form:</p>
+      <ul>
+        <li>Prior-year business return (upload) — the one document needed before staff can build the personalized checklist</li>
+      </ul>
+      <h4>Wrap-up</h4>
+      <ul>
+        <li>Preferred filing timeline — standard vs. extension expected</li>
+        <li>E-file authorization acknowledgment</li>
+        <li>Anything else we should know before we start this return?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TAB 4 ===================== -->
+<section class="panel" id="t4">
+  <span class="eyebrow">Tab 04</span>
+  <h2 class="panel-title">Rollout Plan — Aug 2026 → Dec 2027</h2>
+  <p class="panel-lede">2026 is the build-and-test window: close decisions, finalize documents, and point your existing ShareFile automation at the new letter set. November 2026 is the one-time full re-papering — everyone needs a fresh signature on the new engagement letter, the new policy addendum, and (for some clients) a price increase — sent deliberately ahead of tax season, not alongside it. Get this sequence right once, and every future year just runs the standing playbook.</p>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Phase 1 — Aug–Sept 2026, before you send anything</span>
+      <h3>Close the open decisions</h3>
+      <p>Every doc in the Template Library has at least one red "open decision" callout. Lock these first so the letters going out in November 2026 are final, not draft:</p>
+      <ul>
+        <li>1099/W-2 pricing tiers (first 15–20 included, extra beyond that)</li>
+        <li>Account limits — 7 monthly + 3 annual = 10, then $50/account beyond; franchisee limit at 4 accounts / $500</li>
+        <li>ShareFile-only documentation clause — in or out</li>
+        <li>One combined letter vs. separate payroll pricing page, plus the add/remove-payroll amendment doc</li>
+        <li>Consultation flow — pick one path, not two</li>
+        <li>Franchisee letter — separate document or merged with standard</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Phase 2 — Oct 2026: test, then Nov 2026: re-sign everyone</span>
+      <h3>Send the new terms well before tax season, not alongside it</h3>
+      <p>Sent in November, not January — clients get real runway to review, sign, or decide not to continue, without that decision getting tangled up in tax-prep messaging or made under time pressure.</p>
+      <ul>
+        <li>Oct 2026: test the new letters through the existing ShareFile flow, finalize sequencing</li>
+        <li>Nov 2026: send the new Bookkeeping Engagement Letter + Policy Addendum to every existing client, with a <b>December 15 signing deadline</b></li>
+        <li>Send the Pricing Increase email to flagged clients (e.g. John David) alongside their updated letter, same send</li>
+        <li>Signatures track automatically through ShareFile; anything unsigned after the Dec 15 deadline gets a December follow-up</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Phase 3 — December 2026 → January 2027</span>
+      <h3>Close the loop, then tax season starts clean</h3>
+      <p>December is the last checkpoint before anyone touches tax materials — the January tax list only includes clients who already have the new agreement signed, so no one is ever prepped under an assumption of old terms.</p>
+      <ul>
+        <li>December: chase anyone unsigned past Dec 15; send the Year-End Policy Update email</li>
+        <li>January: send the Tax Engagement Letter to every tax client (Jessica flagged this as the biggest gap — make it universal this year) — signed-clients-only list</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Phase 4 — Ongoing (2027 onward)</span>
+      <h3>This becomes the standing annual cycle</h3>
+      <p>Once 2027's one-time re-sign is done, future years only need: new clients onboarded through the standard flow (Tab 05), the December Year-End email, and the January standing tax engagement letter push — no full re-papering of the client base again. The November-before-tax-season sequencing repeats every year going forward.</p>
+    </div>
+  </div>
+
+  <div class="callout decision" style="margin-top:8px;">
+    <div class="callout-label">◆ Still needs a firm answer</div>
+    <ul>
+      <li>Does the franchisee onboarding email fold into the standard one, or stay Jessica's existing version?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== TAB 5 ===================== -->
+<section class="panel" id="t5">
+  <span class="eyebrow">Tab 05</span>
+  <h2 class="panel-title">New-Hire Onboarding</h2>
+  <p class="panel-lede">Built so a new bookkeeper or account manager can read this tab, understand the whole system, and know exactly where to jump in — without needing Jessica to explain it live.</p>
+
+  <div class="role-grid">
+    <div class="role-card">
+      <span class="role-tier">Tier 1</span>
+      <h3>Bookkeeper / Manager</h3>
+      <p>First point of contact after the free 15–20 min consult. Owns the $100/hr paid consult, day-to-day client requests, and document collection.</p>
+      <ul>
+        <li>Uses the Template Library (Tab 03) for every client-facing email</li>
+        <li>Escalates to Jessica when scope, pricing exceptions, or a difficult client comes up</li>
+        <li>Owns the 8821/W-9/setup-form tracker for their client list</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tier 2</span>
+      <h3>Jessica / Owner</h3>
+      <p>Escalation point, final say on pricing exceptions, and the one who signs engagement letters as Company Representative.</p>
+      <ul>
+        <li>Approves anything outside the Policy Addendum's standard terms</li>
+        <li>Runs paid 1:1 consults when a client opts for her time directly</li>
+        <li>Owns the annual rollout (Tab 04) and pricing menu updates</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <span class="role-tier">Tier 3</span>
+      <h3>New Hire (Month 1)</h3>
+      <p>Ramps through this playbook before touching live clients.</p>
+      <ul>
+        <li>Reads Tabs 01–03 fully; shadows one full client onboarding</li>
+        <li>Practices the Client Scripts (Tab 03) before handling a real difficult-client conversation</li>
+        <li>Starts on Tier 1 tasks under review before working independently</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="panel-title" style="font-size:22px;">Standard Client Onboarding Flow</h2>
+  <p class="panel-lede" style="margin-bottom:20px;">The exact sequence a new hire should run for every new client, so nothing (like an 8821) falls through the cracks.</p>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="step-n"></div>
+      <div class="flow-step-body">
+        <h4>Send the onboarding email</h4>
+        <p>Bookkeeping signups get the Books Onboarding link; tax-only signups get the Tax Client Onboarding link instead. Each form's confirmation page cross-links to the other, so anyone needing both gets caught there. Both forms still need building out (field lists in Tab 03). Engagement letter attached either way.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-n"></div>
+      <div class="flow-step-body">
+        <h4>Track the signature</h4>
+        <p>Log the send date. No work begins until the engagement letter (and Policy Addendum, for 2027 re-signs) is signed and returned.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-n"></div>
+      <div class="flow-step-body">
+        <h4>ShareFile takes over the compliance doc chase</h4>
+        <p>Once signed, the client's onboarding — engagement letter, 8821/W-9/8865, and setup forms — is tracked automatically through ShareFile. A new hire doesn't need to remember to check; they need to know how to read the tracker and act on what it flags.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-n"></div>
+      <div class="flow-step-body">
+        <h4>Set up accounts &amp; confirm tier</h4>
+        <p>Confirm account count against the letter's limit (10 standard / 4 franchisee) and flag anything over that limit for the per-account add-on fee before work starts.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-n"></div>
+      <div class="flow-step-body">
+        <h4>Hand off to standing monthly cycle</h4>
+        <p>Client now enters the Monthly Playbook (Tab 02) at whatever month it currently is — same system every client runs on.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout automate" style="margin-top:8px;">
+    <div class="callout-label">⚙ Already automated via ShareFile — what a new hire should know is live</div>
+    <ul>
+      <li>Compliance-doc tracker (8821/W-9/8865) with auto-reminders — already running for onboarding</li>
+      <li>Signature-status tracking for engagement letters and the policy addendum</li>
+    </ul>
+    <div class="callout-label" style="margin-top:12px;">⚙ Still to layer on</div>
+    <ul>
+      <li>Scheduled sends for the Year-End email (Dec) and standing Tax Engagement Letter push (Jan), tied to this same calendar</li>
+      <li>Account-count flags that auto-notify when a client crosses the 10-account (or 4-account franchisee) threshold</li>
+      <li>Rush-fee / late-fee auto-triggers (targeted for May 2027 — see Monthly Playbook)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== TAB 6 ===================== -->
+<section class="panel" id="t6">
+  <span class="eyebrow">Tab 06</span>
+  <h2 class="panel-title">Time Tracking &amp; Invoicing</h2>
+  <p class="panel-lede">Built for the real problem: Jessica hops between five client emails an hour, so tracking can't depend on remembering to open an app. This puts the timer inside the work itself.</p>
+
+  <div class="callout" style="border-color:#cfae5f; background:var(--gold-pale);">
+    <div class="callout-label" style="color:var(--gold-deep);">◆ Tool recommendation</div>
+    <p style="margin:0; font-size:13.8px; line-height:1.6;"><b>Toggl Track</b> (or <b>Harvest</b> if you'd rather have invoicing generated in the same tool instead of handing hours off to QBO). Either one's browser extension puts a one-click Start/Stop button directly inside Gmail threads and QBO tabs — no separate app to open, no remembering.</p>
+  </div>
+
+  <div class="col-grid" style="margin-bottom:26px;">
+    <div>
+      <div class="col-heading">Client / Project Setup</div>
+      <ul class="task-list">
+        <li>One tracked "project" per client, named to match the master rollout tracker sheet</li>
+        <li>Set a default billing rate per project — hourly, or "flat retainer, do not bill under X hrs"</li>
+        <li>Rates pull straight from the Pricing Menu already in Tab 03: $100–150/hr cleanup, $150/hr advisory</li>
+      </ul>
+    </div>
+    <div>
+      <div class="col-heading">Daily Workflow</div>
+      <ul class="task-list">
+        <li>Click Start on the client email/task she's already opening — extension button lives right there</li>
+        <li>Opening a different client's email prompts a stop/start automatically</li>
+        <li>Off-email work (calls, QBO) — 2-second manual start from the desktop widget</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Weekly — 15 minutes, e.g. every Friday</span>
+      <h3>Reconcile the log</h3>
+      <ul>
+        <li>Review the week's tracked time, round to the nearest 15 minutes</li>
+        <li>Catch and correct anything mislabeled or missing before it's forgotten</li>
+        <li>Flag any client approaching or over their included hours for that tier</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div><div class="phase-line"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Monthly — 1st of the month</span>
+      <h3>Invoice</h3>
+      <ul>
+        <li>Pull the prior month's hours per client from the time tool</li>
+        <li>Bill flat retainer + any overage, or straight hourly depending on tier</li>
+        <li>Cross-check against outstanding balances — trigger the Late Payment Policy already in the Policy Addendum ($25 fee after 7 days, service pause after 14) on anything past due</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-marker"><div class="phase-dot"></div></div>
+    <div class="phase-content">
+      <span class="phase-when">Ongoing payoff</span>
+      <h3>Feeds the annual price review</h3>
+      <p>Once ~90 days of clean tracked data exists, it becomes obvious which clients are under-billed relative to actual hours spent — direct input into the annual price-review clause already in the Policy Addendum, instead of guessing at who needs an increase.</p>
+    </div>
+  </div>
+
+  <div class="callout automate" style="margin-top:8px;">
+    <div class="callout-label">⚙ Sequencing this with everything else</div>
+    <ul>
+      <li>ShareFile already handles onboarding docs + signature tracking — this doesn't touch that</li>
+      <li>Once time tracking is feeding clean monthly data, connect it to ShareFile + QBO + the master tracker sheet with a light integration layer (Zapier or Make.com) — these tools won't talk to each other natively, so this is glue, not a rebuild</li>
+      <li>Rush-fee / late-fee auto-triggers (already flagged for May 2027 in the Monthly Playbook) get much easier once hours and invoices are both flowing through one system</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== TAB 7 — NOTES ===================== -->
+<section class="panel" id="t7">
+  <span class="eyebrow">Tab 07</span>
+  <h2 class="panel-title">Notes</h2>
+  <p class="panel-lede">Open scratch space for Jessica — questions to raise, decisions still pending, things to double-check before a call. Saves automatically as you type.</p>
+
+  <div class="callout" style="border-color:#cfae5f; background:var(--gold-pale); margin-bottom:16px;">
+    <div class="callout-label" style="color:var(--gold-deep);">◆ How this works</div>
+    <p style="margin:0; font-size:13.5px;">Notes save automatically to this browser only — not shared with anyone else and not synced across devices. If you switch computers or clear browser data, these notes won't follow. Use "Copy all notes" below to paste them somewhere permanent (email, ShareFile, a doc) when it matters.</p>
+  </div>
+
+  <div class="notes-wrap">
+    <textarea class="notes-area" id="playbookNotes" placeholder="Start typing — this saves automatically..."></textarea>
+    <div class="notes-status">
+      <span id="notesSavedStatus"><span class="saved-dot"></span>Not yet saved</span>
+      <span style="display:flex; gap:8px;">
+        <button class="notes-btn secondary" id="copyNotesBtn" type="button">Copy all notes</button>
+        <button class="notes-btn secondary" id="clearNotesBtn" type="button">Clear notes</button>
+      </span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>EZ ACCOUNTING PRO · 2027 SYSTEMS PLAYBOOK · BUILT FOR A ONE-TIME ROLLOUT, DESIGNED TO RUN ITSELF AFTER</footer>
+
+<script>
+  const tabButtons = document.querySelectorAll('nav.tabs button');
+  const panels = document.querySelectorAll('section.panel');
+  tabButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabButtons.forEach(b=>b.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+
+  // jump-index links inside tab 3 should just smooth-scroll (tab already active);
+  // links with data-jump (e.g. Hub tab) switch to that tab first
+  document.querySelectorAll('.jump-index a, .template-link').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const targetId = a.getAttribute('href');
+      const jumpTab = a.dataset.jump || 't3';
+      if(targetId && targetId.startsWith('#')){
+        e.preventDefault();
+        tabButtons.forEach(b=>b.classList.remove('active'));
+        panels.forEach(p=>p.classList.remove('active'));
+        document.querySelector(`[data-tab="${jumpTab}"]`).classList.add('active');
+        document.getElementById(jumpTab).classList.add('active');
+        window.scrollTo({top:0, behavior:'smooth'});
+      }
+    });
+  });
+
+  // ---------- Monthly playbook data + render ----------
+  const monthly = [
+    {
+      mo:"August 2026", focus:"Decision-lock month — close every open item so the letters going out in January are final.",
+      client:[],
+      internal:[
+        "Lock every open decision flagged in the Template Library: 1099/W-2 tiers, account limits, ShareFile-only clause, consultation flow, franchisee letter merge",
+        "Finalize new 2027 letter drafts — bookkeeping, tax, franchisee",
+        "Confirm ShareFile's existing onboarding automation is mapped to the new letter versions, not just the old ones"
+      ],
+      templates:[["Bookkeeping Engagement Letter","#doc-bk"],["Franchisee Engagement Letter","#doc-franchise"],["Tax Engagement Letter","#doc-tax"]]
+    },
+    {
+      mo:"September 2026", focus:"Test the automated flow end-to-end before it touches the full client list.",
+      client:[],
+      internal:[
+        "Run one full onboarding cycle through ShareFile on a single client using the new letter set — confirm signature tracking and doc collection both fire correctly",
+        "Finalize pricing menu numbers",
+        "Confirm the ShareFile checklist covers 8821/W-9 for the new letters, not just the legacy ones"
+      ],
+      templates:[["Pricing Menu & Fee Structure","#doc-pricing"]]
+    },
+    {
+      mo:"October 2026", focus:"Tax deadline handled on the existing system; lock the November send.",
+      client:[
+        "Oct 15 — extended individual/C-Corp deadline + Q3 payroll filing"
+      ],
+      internal:[
+        "Finalize the rollout sequence: the new letters go out in November, deliberately ahead of any tax-season messaging",
+        "Confirm ShareFile auto-reminders are turned on for unsigned letters ahead of the November send"
+      ],
+      templates:[]
+    },
+    {
+      mo:"November 2026", focus:"Full re-papering sent now — separate from tax season, with time for clients to decide.",
+      client:[
+        "Send new 2027 Bookkeeping Engagement Letter + Policy Addendum to every active client",
+        "Send Pricing Increase email to confirmed clients (e.g. John David), paired with the updated letter",
+        "Set and communicate the signing deadline: December 15"
+      ],
+      internal:[
+        "This is deliberately separate from tax prep messaging — clients who don't want to continue under the new terms have a full tax-season's notice to make other plans",
+        "Log every letter sent with date, so unsigned ones surface automatically for the December follow-up"
+      ],
+      templates:[["Bookkeeping Engagement Letter","#doc-bk"],["Policy Addendum","#doc-policy"],["Pricing Increase Email","#doc-priceincrease"]]
+    },
+    {
+      mo:"December 2026", focus:"Chase unsigned letters before tax season, not during it. Year-end send closes out the year.",
+      client:[
+        "Dec 31 — business expense cutoff / Solo 401(k) & HSA setup deadline",
+        "Follow up on anyone unsigned past the Dec 15 deadline",
+        "Send Year-End Policy Update email previewing any final 2027 changes"
+      ],
+      internal:[
+        "Build the January tax list from signed clients only — no one enters tax prep under an assumption of old terms",
+        "Final QA pass on every tax-season template before the January send"
+      ],
+      templates:[["Year-End Policy Update Email","#doc-yearend"]]
+    },
+    {
+      mo:"January 2027", focus:"Tax season begins — engagement letters and questionnaires go only to clients already signed on the new terms.",
+      client:[
+        "Send Tax Engagement Letter + Personal/Business Tax Questionnaire to every tax client on the signed list",
+        "Send W-2s / 1099-NECs / W-3 / FUTA 940 on schedule"
+      ],
+      internal:[
+        "Confirm pricing tier decisions are locked before this send (see Rollout tab)",
+        "Brief team on the new Policy Addendum terms so they can explain it if asked"
+      ],
+      templates:[["Tax Engagement Letter","#doc-tax"],["Personal Tax Questionnaire","#doc-tax-questionnaire"],["Business Tax Questionnaire","#doc-business-tax-questionnaire"]]
+    },
+    {
+      mo:"February 2027", focus:"Chase unsigned letters; review what ShareFile flagged.",
+      client:[
+        "Follow up on any engagement letter unsigned after 2 weeks",
+        "Send 1099s from banks/brokers on schedule"
+      ],
+      internal:[
+        "Review ShareFile's auto-flagged 8821/W-9/setup-form gaps — the tracker runs itself, this is just the review pass",
+        "Roll out Client Scripts to the team as the standard boundary language"
+      ],
+      templates:[["Client Scripts","#doc-scripts"]]
+    },
+    {
+      mo:"March 2027", focus:"Partnership/S-Corp deadline + first wave of pricing increases.",
+      client:[
+        "Mar 15 — Partnership & S-Corp returns due",
+        "Send Pricing Increase email to confirmed clients (e.g. John David) once tier decisions are final",
+        "Q1 estimated tax reminder to relevant clients"
+      ],
+      internal:[
+        "Switch to peak-season response SLA (2–3 business days)",
+        "Follow every Pricing Increase send with the matching updated engagement letter"
+      ],
+      templates:[["Pricing Increase Email","#doc-priceincrease"],["Pricing Menu & Fee Structure","#doc-pricing"]]
+    },
+    {
+      mo:"April 2027", focus:"Individual/C-Corp deadline; season closes; retro on what needs fixing.",
+      client:[
+        "Apr 15 — Individual & C-Corp returns due",
+        "Q1 payroll tax filing + Q1 estimated tax",
+        "IRA/HSA/Solo 401(k) contribution deadline reminders"
+      ],
+      internal:[
+        "Run a post-season retro: which template was missing, where did requests get chaotic",
+        "Capture fixes as edits to this playbook, not tribal knowledge"
+      ],
+      templates:[]
+    },
+    {
+      mo:"May 2027", focus:"Turn the playbook into tutorials; extend automation to fee triggers.",
+      client:[
+        "Review franchisee accounts and apply the finalized account-limit tiers"
+      ],
+      internal:[
+        "Record short SOP tutorial videos for each template (as referenced in your original walkthrough notes)",
+        "Extend the existing ShareFile automation to auto-apply rush-fee and late-fee triggers"
+      ],
+      templates:[["Franchisee Engagement Letter","#doc-franchise"]]
+    },
+    {
+      mo:"June 2027", focus:"Mid-year compliance check + Q2 filings.",
+      client:[
+        "Jun 15 — Q2 estimated tax + Q2 payroll tax filing"
+      ],
+      internal:[
+        "Confirm 100% of active clients have a signed 2027 engagement letter on file",
+        "Assess whether Q3/Q4 hiring is needed"
+      ],
+      templates:[]
+    },
+    {
+      mo:"July 2027", focus:"Hiring window if needed; refresh pricing for the next cycle.",
+      client:[],
+      internal:[
+        "If hiring: run the new hire through the onboarding flow (Tab 05) before assigning live clients",
+        "Refresh the pricing menu for the upcoming cycle",
+        "Confirm the rush-fee / late-fee automation is firing correctly"
+      ],
+      templates:[["Pricing Menu & Fee Structure","#doc-pricing"]]
+    },
+    {
+      mo:"August 2027", focus:"Finalize the franchisee-specific documents as permanent standards.",
+      client:[],
+      internal:[
+        "Lock the Franchisee Engagement Letter as its own standing document (or confirm the merge decision)",
+        "Finalize the payroll add/remove amendment document",
+        "Second ShareFile tracker review of the year"
+      ],
+      templates:[["Franchisee Engagement Letter","#doc-franchise"]]
+    },
+    {
+      mo:"September 2027", focus:"Q3 estimated tax + extended entity deadlines.",
+      client:[
+        "Sept 15 — Q3 estimated tax + extended Partnership/S-Corp deadline"
+      ],
+      internal:[
+        "Send check-in email + document push to anyone who filed an extension"
+      ],
+      templates:[]
+    },
+    {
+      mo:"October 2027", focus:"Extended individual/C-Corp deadline closes out the tax season fully.",
+      client:[
+        "Oct 15 — Q3 payroll filing + extended individual/C-Corp deadline"
+      ],
+      internal:[
+        "Run a completeness audit across every extended filing"
+      ],
+      templates:[]
+    },
+    {
+      mo:"November 2027", focus:"Prep for next year's pricing and the December policy send.",
+      client:[],
+      internal:[
+        "Draft the 2028 pricing menu / trigger the annual price-review clause",
+        "Draft the Year-End Policy Update email for December",
+        "Confirm every active client has a signed tax engagement letter on file"
+      ],
+      templates:[["Year-End Policy Update Email","#doc-yearend"]]
+    },
+    {
+      mo:"December 2027", focus:"Send next year's preview; this playbook is now the standing annual template.",
+      client:[
+        "Dec 31 — business expense cutoff / Solo 401(k) & HSA setup deadline",
+        "Send Year-End Policy Update email to every active client"
+      ],
+      internal:[
+        "Confirm the playbook needs no more one-time fixes — 2028 reuses this exact 12-month shape (just repeat Jan–Dec 2027 going forward)",
+        "Archive the 2026–27 rollout notes; only net-new clients need the full Tab 05 onboarding flow from here on"
+      ],
+      templates:[["Year-End Policy Update Email","#doc-yearend"]]
+    }
+  ];
+
+  const acc = document.getElementById('accordion');
+  monthly.forEach((m, i)=>{
+    const item = document.createElement('div');
+    item.className = 'accordion-item' + (i===0 ? ' open' : '');
+    const clientLis = m.client.map(t=>`<li>${t}</li>`).join('');
+    const internalLis = m.internal.map(t=>`<li>${t}</li>`).join('');
+    const tmplLinks = m.templates.map(([label,href])=>`<a class="template-link" href="${href}">${label}</a>`).join('');
+    item.innerHTML = `
+      <div class="accordion-head">
+        <div class="accordion-head-left">
+          <span class="mo">${m.mo}</span>
+          <span class="focus">${m.focus}</span>
+        </div>
+        <span class="caret">▸</span>
+      </div>
+      <div class="accordion-body">
+        <div class="col-grid">
+          <div>
+            <div class="col-heading">Client-Facing</div>
+            <ul class="task-list">${clientLis || '<li>No client-facing sends this month</li>'}</ul>
+          </div>
+          <div>
+            <div class="col-heading">Internal / Systems</div>
+            <ul class="task-list">${internalLis || '<li>No internal tasks flagged this month</li>'}</ul>
+          </div>
+        </div>
+        ${tmplLinks ? `<div class="col-heading" style="margin-top:6px;">Linked Templates</div><div>${tmplLinks}</div>` : ''}
+      </div>
+    `;
+    item.querySelector('.accordion-head').addEventListener('click', ()=>{
+      item.classList.toggle('open');
+    });
+    acc.appendChild(item);
+  });
+
+  // re-bind template-link clicks now that they exist in the DOM
+  acc.addEventListener('click', (e)=>{
+    const link = e.target.closest('.template-link');
+    if(link){
+      e.stopPropagation();
+      const targetId = link.getAttribute('href');
+      tabButtons.forEach(b=>b.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      document.querySelector('[data-tab="t3"]').classList.add('active');
+      document.getElementById('t3').classList.add('active');
+      setTimeout(()=>{
+        const el = document.querySelector(targetId);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 60);
+    }
+  });
+
+  // ---------- Notes tab: auto-save to this browser's localStorage ----------
+  (function(){
+    const NOTES_KEY = 'ezAccountingPlaybookNotes';
+    const notesArea = document.getElementById('playbookNotes');
+    const statusEl = document.getElementById('notesSavedStatus');
+    const copyBtn = document.getElementById('copyNotesBtn');
+    const clearBtn = document.getElementById('clearNotesBtn');
+    let saveTimer = null;
+
+    function formatTime(){
+      const d = new Date();
+      return d.toLocaleDateString(undefined, {month:'short', day:'numeric'}) + ' at ' +
+             d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'});
+    }
+
+    // Load existing notes on page load
+    try{
+      const saved = localStorage.getItem(NOTES_KEY);
+      if(saved){
+        notesArea.value = saved;
+        statusEl.innerHTML = '<span class="saved-dot"></span>Loaded from this browser';
+      }
+    }catch(e){
+      statusEl.textContent = 'Local storage unavailable in this browser';
+    }
+
+    notesArea.addEventListener('input', ()=>{
+      clearTimeout(saveTimer);
+      statusEl.innerHTML = '<span class="saved-dot" style="background:var(--gold-deep);"></span>Saving…';
+      saveTimer = setTimeout(()=>{
+        try{
+          localStorage.setItem(NOTES_KEY, notesArea.value);
+          statusEl.innerHTML = '<span class="saved-dot"></span>Saved ' + formatTime();
+        }catch(e){
+          statusEl.textContent = 'Could not save — storage may be full or disabled';
+        }
+      }, 500);
+    });
+
+    copyBtn.addEventListener('click', ()=>{
+      notesArea.select();
+      try{
+        document.execCommand('copy');
+        const original = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=>{ copyBtn.textContent = original; }, 1500);
+      }catch(e){
+        navigator.clipboard && navigator.clipboard.writeText(notesArea.value);
+      }
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      if(confirm('Clear all notes? This cannot be undone.')){
+        notesArea.value = '';
+        try{ localStorage.removeItem(NOTES_KEY); }catch(e){}
+        statusEl.innerHTML = '<span class="saved-dot"></span>Not yet saved';
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
